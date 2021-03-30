@@ -1,0 +1,12 @@
+probe begin
+{
+  printf("%-30s%-8s %-16s %-8s %-16s %6s %-16s\n",
+         "TIME","SPID", "SNAME", "RPID", "RNAME", "SIGNUM", "SIGNAME")
+}
+
+probe signal.send
+{
+  if (pid_name == @1)
+      printf("%-30s%-8d %-16s %-8d %-16s %6d %-16s\n",
+              ctime(gettimeofday_s()),pid(), execname(), sig_pid, pid_name, sig, sig_name)
+}

@@ -1,0 +1,20 @@
+syntax = "proto2";
+
+import "addressbook.proto";
+
+package tutorial;
+
+message School{
+  optional string name = 1;
+  optional AddressBook studentAddressBook = 2;
+}
+
+message Student{
+  optional string name = 1 [default = ""];
+  optional int32 age = 2 [default = 0];
+  extensions 100 to 199;
+}
+
+extend Student{
+  optional int32 classNo = 111 [default = 1];
+}

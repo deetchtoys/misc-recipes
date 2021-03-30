@@ -1,0 +1,16 @@
+probe begin
+{
+  print ("probe begin ...\n")
+}
+
+probe process("main").statement("*@main.cc:9")
+{
+  print("", $sum, "\n")
+  $sum = $sum + 100
+}
+
+
+probe end
+{
+  print("probe end ...\n")
+}

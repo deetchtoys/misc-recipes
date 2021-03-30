@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+import "school.proto";
+
+package tutorial;
+
+service TestService{
+  rpc test (Student) returns (School);
+}

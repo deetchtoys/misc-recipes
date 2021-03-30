@@ -1,0 +1,54 @@
+probe begin
+{
+  print ("probe begin ...\n")
+}
+
+probe kernel.function("*@net/socket.c")
+{
+  printf("tid(%d), pid(%d), uid(%d), execname(%s), cpu(%d),"
+         "gettimeofday_s(%d), get_cycles(%d), pp(%s), ppfunc(%s)\n",
+         tid(), pid(), uid(), execname(), cpu(), gettimeofday_s(), get_cycles(), pp(), ppfunc())
+}
+
+probe kernel.function("*@net/socket.c").return
+{
+}
+
+probe kernel.function("*@net/socket.c").call {
+  printf ("%s -> %s\n", thread_indent(1), ppfunc())
+}
+probe kernel.function("*@net/socket.c").return {
+  printf ("%s <- %s\n", thread_indent(-1), ppfunc())
+}
+
+probe process("main").statement("*@main.cc:9")
+{
+  print("++sum\n")
+}
+
+probe perf.hw.cache_misses
+{
+  print("cache misses\n")
+}
+
+probe syscall.open
+{
+  printf ("%s(%d) open (%s)\n", execname(), pid(), argstr)
+}
+
+probe syscall.execve
+{
+  printf ("%s(%d) open (%s)\n", execname(), pid(), argstr)
+}
+
+probe timer.ms(1000) # after 4 seconds
+{
+  printf("timer exceed, tid(%d), pid(%d), uid(%d), execname(%s), cpu(%d),"
+         "gettimeofday_s(%d), get_cycles(%d), pp(%s), ppfunc(%s)\n",
+         tid(), pid(), uid(), execname(), cpu(), gettimeofday_s(), get_cycles(), pp(), ppfunc())
+}
+
+probe end
+{
+  print("probe end ...\n")
+}
